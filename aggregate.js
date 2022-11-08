@@ -149,4 +149,47 @@ mongoose.connect(url, (err, db) => {
     //     });
     // });
 });
+
+
+
+
+exports.getMatchDetails = (req, res) => {
+  // match.aggregate(
+  //   [
+  //     {
+  //       $match: {
+  //         $and: [{ matchType: { $eq: "test1" } }, { player: "vinoth" }],
+  //       },
+  //     },
+  //   ],
+  //   function (err, data) {
+  //     res.json({ data: data });
+  //   }
+  // );
+
+  const value = req.body.matchType;
+  match.aggregate(
+    [
+      {
+        $match: { matchType: { $eq: value } },
+      },
+      {
+        $addFields: {
+          status: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$status", true] }, then: "Active" },
+                { case: { $eq: ["$status", false] }, then: "Inactive" },
+              ],
+              default: null,
+            },
+          },
+        },
+      },
+    ],
+    function (err, data) {
+      res.json({ data: data });
+    }
+  );
+};
 app.listen(5000)
