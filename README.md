@@ -8,3 +8,4 @@ Code runner
 One dark pro
 Auto rename rag
 Auto close tag
+Whirl css loading 
