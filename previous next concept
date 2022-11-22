@@ -1,0 +1,66 @@
+
+exports.SumofRecords = async (req, res) => {
+  const contestId = req.body.matchId;
+  const isType=req.body.type
+  console.log("isType: ", isType);
+  const currentContestId = await match.findOne({ matchId: contestId });
+  const userContestList = await userList.findOne({ user_status: contestId });
+  if ( currentContestId != null || userContestList != null) {
+    let obj = {
+      val1: currentContestId,
+      val2: userContestList, 
+    };
+    console.log('test1');
+    res.json({ status: true, message: "success", data: obj });
+  }
+  else if (isType=='previous') {
+    // && ( currentContestId === null || userContestList === null)
+    const lessCurrentContestId = await match.findOne({ matchId: { $lt: contestId } }).sort({ 'matchId': -1 });
+    const lessUserContestList = await userList.findOne({ user_status: { $lt: contestId } }).sort({ 'user_status': -1 });
+    if(lessCurrentContestId === null || lessUserContestList === null){
+      let obj = {
+        val1: [],
+        val2: [],
+      };
+      res.json({ status: false, message: "No data found previous", data: obj });
+    }
+    else{
+      let obj = {
+        val1: lessCurrentContestId,
+        val2: lessUserContestList,
+      };
+      console.log('test2 ');
+      res.json({ status: true, message: "success", data: obj, isstaus:obj?true:false });
+    }
+
+  }
+ else  if (isType=='next') {
+    const greatCurrentContestId = await match.findOne({ matchId: { $gt: contestId } }).sort({ 'matchId': -1 });
+    const greatUserContestList = await userList.findOne({ user_status: { $gt: contestId } }).sort({ 'user_status': -1 });
+    if(greatCurrentContestId === null || greatCurrentContestId === null){
+      let obj = {
+        val1: [],
+        val2: [],
+      };
+      res.json({ status: false, message: "No data found next", data: obj });
+    }
+    else{
+      let obj = {
+        val1: greatCurrentContestId,
+        val2: greatUserContestList,
+      };
+      console.log('test3 ');
+      res.json({ status: true, message: "success", data: obj, isstaus:obj?true:false });
+    }
+  }
+ 
+
+};
+
+
+
+postman data
+{
+    "matchId":"9",
+    "type":"next"
+}
