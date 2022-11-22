@@ -1,4 +1,3 @@
-
 exports.SumofRecords = async (req, res) => {
   const contestId = req.body.matchId;
   const isType=req.body.type
@@ -22,7 +21,7 @@ exports.SumofRecords = async (req, res) => {
         val1: [],
         val2: [],
       };
-      res.json({ status: false, message: "No data found previous", data: obj });
+      res.json({ status: false, message: "No data found previous", data: obj,previoustatus:false });
     }
     else{
       let obj = {
@@ -30,7 +29,7 @@ exports.SumofRecords = async (req, res) => {
         val2: lessUserContestList,
       };
       console.log('test2 ');
-      res.json({ status: true, message: "success", data: obj, isstaus:obj?true:false });
+      res.json({ status: true, message: "success", data: obj, previoustatus:true });
     }
 
   }
@@ -42,7 +41,7 @@ exports.SumofRecords = async (req, res) => {
         val1: [],
         val2: [],
       };
-      res.json({ status: false, message: "No data found next", data: obj });
+      res.json({ status: false, message: "No data found next", data: obj,nextstatus:false  });
     }
     else{
       let obj = {
@@ -50,15 +49,12 @@ exports.SumofRecords = async (req, res) => {
         val2: greatUserContestList,
       };
       console.log('test3 ');
-      res.json({ status: true, message: "success", data: obj, isstaus:obj?true:false });
+      res.json({ status: true, message: "success", data: obj, nextstatus:true });
     }
   }
  
 
 };
-
-
-
 postman data
 {
     "matchId":"9",
