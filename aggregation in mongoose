@@ -1,0 +1,37 @@
+// aggregation
+// Aggregation is a way of processing a large number of documents in a collection by means of
+// assing them through different stages. The stages make up what is known as a pipeline. The
+// stages in a pipeline can filter, sort, group, reshape and modify documents that pass through the pipeline.
+
+exports.SumofRecords = async (req, res) => {
+
+
+  match.aggregate(
+    [
+      { $match: { matchType: "test1" } },
+      {
+        // group first means first obj match
+        // group last means last obj match
+        $group: {
+          _id: "$matchId", //unique find
+          matchId: { $first: "$matchId" },
+          matchType: { $first: "$matchType" },
+          player: { $first: "$player" },
+          _Id: { $first: "$_id" },
+        },
+      },
+      {
+        $sort: { _id: -1 },
+      },
+      // project 0 means remove that field
+      // project 1 means add that field
+      { $project: { _id: 0, Id: 1, matchId: 1, matchType: 1, player: 1 } },
+      { $unset: ["_id"] }, //remove field id
+      { $limit: 4 },
+      { $skip: 1 }, //first one obj skip
+    ],
+    function (err, data) {
+      res.json({ data: data });
+    }
+  );
+};
