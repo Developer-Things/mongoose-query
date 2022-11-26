@@ -79,6 +79,10 @@ app.get('/findone', (req, res) => {
 // })
 // })
 
+// count for collection
+  let demoDocument = await match.countDocuments({});
+  console.log("demoDocument", demoDocument);
+
 port = 3030
 app.listen(port, () => {
     console.log(`server start in ${port}`)
