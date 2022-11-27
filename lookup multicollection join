@@ -1,0 +1,49 @@
+exports.SumofRecords = async (req, res) => {
+  //  userexp=>userpersonal details
+  //  matches=>userjoin list
+  //  userexpstatus compare matchid to join
+  userexp
+    .aggregate([
+      {
+        $lookup: {
+          from: "matches",
+          localField: "user_status",
+          foreignField: "matchId",
+          as: "userDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "admins",
+          localField: "user_status",
+          foreignField: "adminStatus",
+          as: "adminDetails",
+        },
+      },
+      { $unwind: "$userDetails" },
+      { $unwind: "$adminDetails" },
+      {
+        $project: {
+          "email": 1,
+          "username": 1,
+          "userDetails.matchType": 1,
+          "userDetails.player": 1,
+          "userDetails.matchId": 1,
+          "userDetails.status": 1,
+          "adminDetails.adminStatus": 1,
+        },
+      },
+    ])
+
+    .then((suc) => {
+      // console.log("result+++++", suc);
+      if (suc) {
+        res.json({ status: true, message: "success", data: suc });
+      } else {
+        res.json({ status: false, message: "No data found", data: [] });
+      }
+    })
+    .catch((error) => {
+      res.json({ status: false, message: "Something went wrong", data: error });
+    });
+};
