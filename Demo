@@ -1,0 +1,19 @@
+// var iterations = 0;
+// var interval = setInterval(foo, 1000);
+// function foo() {
+//   iterations++;
+//   if (iterations >= 7) {
+//     clearInterval(interval);
+//   }
+// }
+
+// lottery.findOne({lotteryStatus:"InActive"},function(err,data){
+//   data.ticketId, data.bracket , data.contenstId
+//   // contract function call result end finally change  lotteryStatus=="Deactive"
+
+// })
+
+// arrays = [{ id: 1 ,name:'dinesh'}, { id: 2 ,name:'gopi'}];
+// arrays.map((element, index) => {
+//   console.log("element, index: ", arrays[index].name);
+// });
