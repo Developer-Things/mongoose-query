@@ -1,19 +1,91 @@
-// var iterations = 0;
-// var interval = setInterval(foo, 1000);
-// function foo() {
-//   iterations++;
-//   if (iterations >= 7) {
-//     clearInterval(interval);
-//   }
-// }
 
-// lottery.findOne({lotteryStatus:"InActive"},function(err,data){
-//   data.ticketId, data.bracket , data.contenstId
-//   // contract function call result end finally change  lotteryStatus=="Deactive"
+exports.userprofile = (req, res) => {
+  let values = req.body;
+  console.log("values: ", values);
+  if (values.isStatus === "singleData") {
+    userexp.findOne({ _id: values.id }, function (err, data) {
+      if (err) {
+        res.json({ message: err });
+      } else if (data == null) {
+        res.json({ message: "no one found!" });
+      } else {
+        res.json({ success: data });
+      }
+    });
+  } else if (values.isStatus === "multiData") {
+    userexp.find({}, function (err, data) {
+      if (err) {
+        res.json({ message: err });
+      } else if (data.length == 0) {
+        res.json({ message: "no one found!" });
+      } else {
+        res.json({ success: data });
+      }
+    });
+  }
+};
 
-// })
 
-// arrays = [{ id: 1 ,name:'dinesh'}, { id: 2 ,name:'gopi'}];
-// arrays.map((element, index) => {
-//   console.log("element, index: ", arrays[index].name);
-// });
+
+TS
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApiService } from "src/app/api/api.service";
+import { CommonService } from "src/app/common/common.service";
+
+@Component({
+  selector: "app-userprofile",
+  templateUrl: "./userprofile.component.html",
+  styleUrls: ["./userprofile.component.scss"],
+})
+export class UserprofileComponent implements OnInit {
+  constructor(
+    public apiService: ApiService,
+    public commonService: CommonService,
+    public route: Router,
+    public activatedRoute: ActivatedRoute
+  ) {}
+  user_profile = {
+    username: "",
+    email: "",
+    user_status: "",
+  };
+
+  singleUserData: any = {};
+  id: any;
+  ngOnInit() {
+    this.id = this.activatedRoute.snapshot.params["id"];
+  }
+  updateProfile() {
+    this.route.navigate(["/page/update_profile"]);
+  }
+  singleData() {
+    this.singleUserData.id = this.id;
+    console.log(" this.singleUserData.id: ",  this.singleUserData.id);
+    this.singleUserData.isStatus = "singleData";
+    this.apiService
+      .postData(this.singleUserData, "user/profile")
+      .subscribe((result: any) => {
+        this.user_profile.username = result.success.username;
+        this.user_profile.email = result.success.email;
+        this.user_profile.user_status = result.success.user_status;
+        let value = JSON.stringify(this.user_profile.email);
+        localStorage.setItem("keys", value);
+      });
+  }
+  multiData(){
+    this.singleUserData.isStatus = "multiData";
+    this.apiService
+      .postData(this.singleUserData, "user/profile")
+      .subscribe((result: any) => {
+        this.user_profile.username = result.success.username;
+        this.user_profile.email = result.success.email;
+        this.user_profile.user_status = result.success.user_status;
+        let value = JSON.stringify(this.user_profile.email);
+        localStorage.setItem("keys", value);
+      });
+  }
+}
+
+TS
+  this.router.navigate(['/page/user_profile',result.success._id])
