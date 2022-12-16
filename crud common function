@@ -1,0 +1,57 @@
+const pairsList = require("../model/pairsmod");
+
+//find
+async function getData(data) {
+  return new Promise(async (resolve, reject) => {
+    let findData = await data.find();
+    resolve(findData);
+  });
+}
+//findOne
+async function getSingleData(collection, obj) {
+  return new Promise(async (resolve, reject) => {
+    let findOneData = await collection.findOne(obj);
+    resolve(findOneData);
+  });
+}
+//updateData
+async function updateData(collection, obj) {
+  return new Promise(async (resolve, reject) => {
+    let updateData = await collection.updateOne(obj);
+    resolve(updateData);
+  });
+}
+//updateManyData
+async function updateManyData(collection, obj) {
+  return new Promise(async (resolve, reject) => {
+    let UpdateManyData = await collection.updateMany({}, obj);
+    resolve(UpdateManyData);
+  });
+}
+
+async function testData() {
+  // find
+  let findDetails = await getData(pairsList);
+
+  //findOne
+  getOneDetailsObj = {
+    fromTokenAddress: "c01",
+  };
+  let findOneDetails = await getSingleData(pairsList, getOneDetailsObj);
+
+  //update
+  updateOneDetailsObj = {
+    fromTokenAddress: "c01",
+    pairAddress: "8888",
+  };
+
+  let updateDetails = await updateData(pairsList, updateOneDetailsObj);
+
+  //updateManyDetails
+  updateManyDetailsObj = {
+    newAddress: "99878997979",
+  };
+  let updateManyDetails = await updateManyData(pairsList, updateManyDetailsObj);
+}
+
+testData();
