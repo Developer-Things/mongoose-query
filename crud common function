@@ -3,35 +3,58 @@ const pairsList = require("../model/pairsmod");
 //find
 async function getData(data) {
   return new Promise(async (resolve, reject) => {
-    let findData = await data.find();
-    resolve(findData);
+    let FindData = await data.find();
+    resolve(FindData);
   });
 }
 //findOne
 async function getSingleData(collection, obj) {
   return new Promise(async (resolve, reject) => {
-    let findOneData = await collection.findOne(obj);
-    resolve(findOneData);
+    let FindOneData = await collection.findOne(obj);
+    resolve(FindOneData);
   });
 }
 //updateData
-async function updateData(collection, obj) {
+async function updateData(collection, findValue, updateValue) {
   return new Promise(async (resolve, reject) => {
-    let updateData = await collection.updateOne(obj);
-    resolve(updateData);
+    let UpdateData = await collection.updateOne(findValue, updateValue);
+    resolve(UpdateData);
   });
 }
 //updateManyData
-async function updateManyData(collection, obj) {
+async function updateManyData(collection, findValue, updateValue) {
   return new Promise(async (resolve, reject) => {
-    let UpdateManyData = await collection.updateMany({}, obj);
+    let UpdateManyData = await collection.updateMany(findValue, updateValue);
     resolve(UpdateManyData);
+  });
+}
+
+//deleteData
+async function deleteData(collection, deleteValue) {
+  return new Promise(async (resolve, reject) => {
+    let DeleteData = await collection.deleteOne(deleteValue);
+    resolve(DeleteData);
+  });
+}
+
+//deleteManyData
+async function deleteManyData(collection, deleteValue) {
+  return new Promise(async (resolve, reject) => {
+    let DeleteManyData = await collection.deleteMany(deleteValue);
+    resolve(DeleteManyData);
+  });
+}
+async function findOneDeleteData(collection,findvalue, deleteValue) {
+  return new Promise(async (resolve, reject) => {
+    let FindOneAndRemoveData = await collection.findOneAndDelete(findvalue,deleteValue)
+    resolve(FindOneAndRemoveData);
   });
 }
 
 async function testData() {
   // find
   let findDetails = await getData(pairsList);
+  console.log("findDetails: ", findDetails);
 
   //findOne
   getOneDetailsObj = {
@@ -39,19 +62,32 @@ async function testData() {
   };
   let findOneDetails = await getSingleData(pairsList, getOneDetailsObj);
 
-  //update
-  updateOneDetailsObj = {
-    fromTokenAddress: "c01",
-    pairAddress: "8888",
-  };
+  //updateone
+  let findValue = { fromTokenAddress: "c01" }
+  let updateValue = { $set: { "pairAddress": "5555" } }
+  let updateDetails = await updateData(pairsList, findValue, updateValue);
+  console.log("updateDetails: ", updateDetails);
 
-  let updateDetails = await updateData(pairsList, updateOneDetailsObj);
+  //updateMany
+  let findValue1 = {}
+  let updateValue1 = { $set: { "newAddress": "979663333333" } }
+  let updateManyDetails = await updateManyData(pairsList, findValue1, updateValue1);
 
-  //updateManyDetails
-  updateManyDetailsObj = {
-    newAddress: "99878997979",
-  };
-  let updateManyDetails = await updateManyData(pairsList, updateManyDetailsObj);
+  //deleteone
+  // let deleteOneValue = { "newAddress": "979663333333" }
+  // let delteOneDetails = await deleteData(pairsList, deleteOneValue)
+
+  //deleteMany
+  // let deleteManyValue = { "newAddress": "979663333333" }
+  // let delteManyDetails = await deleteManyData(pairsList, deleteManyValue)
+
+  let findValue3 = { fromTokenAddress: "c07" }
+  let deleteValue ={ "newAddress": "979663333333" }
+  let findOneDeleteDetails = await findOneDeleteData(pairsList,findValue3, deleteValue)
+  console.log("findOneDeleteDetails: ", findOneDeleteDetails);
+
+
+  
 }
 
 testData();
