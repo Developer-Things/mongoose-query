@@ -1,0 +1,12 @@
+
+
+testData(10, 5, (print) => {
+  console.log("print>>>>>>: ", print);
+})
+
+async function testData(value1, value2, cb) {
+  let total = value1 + value2
+  if (typeof cb === 'function') {
+    cb(total)
+  }
+}
