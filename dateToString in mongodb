@@ -1,0 +1,99 @@
+eg: mongodb
+============
+[
+  {
+    "_id": ObjectId("58891b5656a961427e7b23c6"),
+    "user_id": 122,
+    "played_event": [
+      {
+        "date": ISODate("2017-01-25T21:43:48.146Z"),
+        "totalPlayed": 0,
+        
+      },
+      {
+        "date": ISODate("2017-01-26T22:26:03.273Z"),
+        "totalPlayed": 838,
+        
+      },
+      
+    ]
+  },
+  {
+    "_id": ObjectId("58891b5656a961427e7b23f3"),
+    "user_id": 130,
+    "played_event": [
+      {
+        "date": ISODate("2017-01-25T21:43:48.146Z"),
+        "totalPlayed": 10,
+        
+      },
+      {
+        "date": ISODate("2017-01-25T21:43:48.146Z"),
+        "totalPlayed": 10,
+        
+      },
+      {
+        "date": ISODate("2017-01-25T21:43:48.146Z"),
+        "totalPlayed": 10,
+        
+      },
+      {
+        "date": ISODate("2017-01-30T22:26:03.273Z"),
+        "totalPlayed": 838,
+        
+      },
+      
+    ]
+  }
+]
+
+
+query
+=======
+db.collection.aggregate([
+  {
+    "$unwind": "$played_event"
+  },
+  {
+    "$group": {
+      "_id": {
+        "$dateToString": {
+          "format": "%Y-%m-%d",
+          "date": "$played_event.date"
+        },
+        
+      },
+      "totalPlayed": {
+        "$sum": {
+          "$sum": "$played_event.totalPlayed"
+        }
+      }
+    }
+  },
+  {
+    "$project": {
+      "date": "$_id",
+      "sum": 1,
+      "_id": 0,
+      "totalPlayed": 1
+    }
+  }
+])
+
+result
+============
+
+[
+  {
+    "date": "2017-01-25",
+    "totalPlayed": 30
+  },
+  {
+    "date": "2017-01-26",
+    "totalPlayed": 838
+  },
+  {
+    "date": "2017-01-30",
+    "totalPlayed": 838
+  }
+]
