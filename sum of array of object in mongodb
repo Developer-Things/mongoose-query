@@ -1,0 +1,49 @@
+
+mongodb
+=============
+[
+  {
+    "_id": 444,
+    "message_count": 4,
+    "messages": {
+      "data": [
+        {
+          "id": "444",
+          "saleValue": 2060
+        },
+        {
+          "id": "444",
+          
+        },
+        {
+          "id": 234,
+          "saleValue": 260
+        },
+        {
+          "id": "34534",
+          
+        }
+      ]
+    },
+    "createdTime": ISODate("2018-03-18T03:11:50.000Z")
+  }
+]
+
+
+
+query
+==========
+
+
+db.collection.aggregate([
+  {
+    "$group": {
+      "_id": "$tempId",
+      "totalValue": {
+        "$sum": {
+          "$sum": "$messages.data.saleValue"
+        }
+      }
+    }
+  }
+])
