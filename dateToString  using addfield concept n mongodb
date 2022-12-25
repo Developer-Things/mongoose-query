@@ -21,7 +21,7 @@ eg: mongodb
 
 query
 =======
- let sumWinngAmount = await match.aggregate([
+let sumWinngAmount = await match.aggregate([
     {
       "$unwind": "$winningResult"
     },
@@ -42,12 +42,21 @@ query
       }
     },
     {
+      $addFields: {
+        getAmount: {
+          $sum: "$winningAmount"
+        },
+      }
+    },
+    {
       "$project": {
         "date": "$_id",
         "sum": 1,
         "_id": 0,
+        "getAmount": 1,
         "winningAmount": 1
-      }
+      },
+
     }
   ])
 result
