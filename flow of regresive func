@@ -1,0 +1,40 @@
+var fromAddress
+var toAddress
+var pairAddress
+var isFromAddress =boolean//IsNotBasePair Check Purpose
+var isToAddress =boolean //IsNotBasePair Check Purpose
+1.eg:m1, m2 
+
+pairs.find(pairsAddress) 1.false 
+
+fromAddress =>find currency table for baseAddress ?true /false 1. false
+toAddress =>find currency table for baseAddress ?true /false  1.false
+
+isNotBase =fromAddress
+isNotBase=toAddress
+isNotBase
+
+if(result.length == 0 )  {  bnb /A || wtn  
+create  
+function call usdupdate,reservalupdate,  ?isFromAddress || isToAddress function not execute
+}
+else {
+update
+function call usdupdate,reservalupdate,
+}
+
+1. (!isFromAddress && !isToAddress) eq :(m1 ,m2)   //create otherwise data empty //new pairs find data.lenghth 0 create  //not use 
+2. m1 /wtn  =create otherwise data added in wtn based 
+
+
+
+m1/wtn =wtn usd calculate
+on this spot m1 find to pairsTable 
+get
+1. m1,m2
+2. m1,m3
+
+
+two data get that time regresive functio call 
+
+
