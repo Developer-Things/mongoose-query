@@ -91,3 +91,42 @@ async function testData() {
 }
 
 testData();
+
+
+
+
+async function uniqueField(collection, values) {
+  const keys = Object.keys(values);
+  return new Promise(async (resolve, reject) => {
+    let getUniqueField = await collection.find(values)
+    if (getUniqueField.length > 0) {
+      resolve(`${keys} already exit`);
+    }
+    else if (getUniqueField.length == 0) {
+      resolve("No data found")
+    }else {
+      reject("Something went wrong")
+    }
+  });
+}
+  
+async function data() {
+  var checkField = {
+    "tokenAddress": "12345",
+  }
+  var obj = {
+    "tokenAddress": "12345",
+    "tokenName": "A",
+    "tokenDecimal": "18",
+    "tokenSymbol": "A",
+  }
+
+  let createliquidity = await uniqueField(liquidityexp, checkField)  
+  if(!createliquidity){
+    let createliquiditys= await liquidityexp.create(obj)
+  }else {
+    console.log("No create data");
+  } 
+}
+
+data()
