@@ -1,0 +1,36 @@
+wtn_bnb -100
+wtn_z1-300
+z2_z1-600
+abc_bnb=800
+wtn_abc-1000
+
+
+wtn ,z1,z2,abc 
+
+1st loop
+wtn base check bnb no-> inside 
+wtn base check z1  yes-> outside
+wtn base check abc no->inside 
+
+2nd loop 
+wtn base check z1 no-> (reverse order) inside 
+z2 base check z1 yes->(reverse order)  outside 
+
+3rd loop
+z2 base check z1 no-> inside (wtn base)
+
+4th loop
+abc base check bnb no->inside 
+wtn base check abc no->inside 
+
+not filter 
+1.wtn_bnb
+2.wtn_z1
+3.z2_z1 
+4.abc_bnb
+5.wtn_abc 
+
+
+
+
+
