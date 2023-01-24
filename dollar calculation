@@ -1,0 +1,70 @@
+WTN-BNB
+WTN-Z1
+WTN-ABC
+
+eq: if WTN-ABC
+if(contractAddress===fromCurrencyAddress)//wtn_bnb
+{
+ secondAddress=toCurrencyAddress //bnb find wtn//inside
+}
+
+eg:else if BNB-WTN
+else if (contractAddress===toCurrencyAddress){
+secondAddress =fromCurrencyAddress//bnb find wtn //inside
+}
+
+
+
+second step
+[
+  {
+    "fromTokenSymbol": "WTN",
+    "toTokenSymbol": "BNB",
+    "fromTokenAddress": "C02",
+    "toTokenAddress": "C01",
+    "pairAddress": "P01",
+    "__v": 0
+  },
+  {
+    "fromTokenSymbol": "WTN",
+    "toTokenSymbol": "Z1",
+    "fromTokenAddress": "C02",
+    "toTokenAddress": "C03",
+    "pairAddress": "P02",
+    
+  },
+  {
+    "fromTokenSymbol": "WTN",
+    "toTokenSymbol": "ABC",
+    "fromTokenAddress": "C02",
+    "toTokenAddress": "C05",
+    "pairAddress": "P05",
+    "__v": 0
+  }
+]	
+
+
+
+db.collection.aggregate([
+  {
+    $project: {
+      fromTokenSymbol: 1,
+      toTokenSymbol: 1,
+      fromTokenAddress: 1,
+      toTokenAddress: 1,
+      pairAddress: 1,
+      status: {
+        $cond: {
+          if: {
+            $eq: [
+              "$toTokenAddress",
+              "C01"
+            ]
+          },
+          then: true,
+          else: false
+        }
+      }
+    }
+  }
+])
