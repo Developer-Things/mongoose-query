@@ -68,3 +68,208 @@ db.collection.aggregate([
     }
   }
 ])
+
+
+
+
+__________add field 
+
+
+Products
+Add field to collection with a condition in mongodb
+Asked 2 years, 11 months ago
+Modified 2 years, 11 months ago
+Viewed 12k times
+
+2
+
+
+I want to add a new boolean field to a collection with other field's information.
+
+My sample data is ;
+
+{ 
+    "_id" : ObjectId("50abae61edecb53c740022eb"), 
+    "pull_request" : {
+        "diff_url" : null, 
+        "patch_url" : null, 
+        "html_url" : null
+    }
+}
+{ 
+    "_id" : ObjectId("50abae61edecb53c740022ec"), 
+    "pull_request" : {
+        "diff_url" : "https://github.com/joyent/http-parser/pull/106.diff", 
+        "patch_url" : "https://github.com/joyent/http-parser/pull/106.patch", 
+        "html_url" : "https://github.com/joyent/http-parser/pull/106"
+    }, 
+} 
+The new field is "hasPullRequest"; if pull_request field is null, hasPullRequest:false; otherwise hasPullRequest:true. I mean that below;
+
+{ 
+    "_id" : ObjectId("50abae61edecb53c740022eb"), 
+    "pull_request" : {
+        "diff_url" : null, 
+        "patch_url" : null, 
+        "html_url" : null
+    },
+    "hasPullRequest" : false
+}
+{ 
+    "_id" : ObjectId("50abae61edecb53c740022ec"), 
+    "pull_request" : {
+        "diff_url" : "https://github.com/joyent/http-parser/pull/106.diff", 
+        "patch_url" : "https://github.com/joyent/http-parser/pull/106.patch", 
+        "html_url" : "https://github.com/joyent/http-parser/pull/106"
+    }, 
+    "hasPullRequest" : true
+} 
+I tried this query but it didnt run;
+
+db.getCollection('issues').aggregate([
+   {
+     $addFields: {
+       hasPullRequest:  { 
+            "$cond": {
+            if: { { "$eq": {"$pull_request": null}} ,
+            then: false,
+            else: true
+            } 
+      }
+   }
+])
+How can I do this?
+
+mongodbsetaggregation-frameworkconditional-statements
+Share
+Improve this question
+Follow
+edited Feb 11, 2020 at 19:53
+Valijon's user avatar
+Valijon
+12.1k44 gold badges3434 silver badges6666 bronze badges
+asked Feb 11, 2020 at 13:22
+babeyh's user avatar
+babeyh
+63022 gold badges77 silver badges1717 bronze badges
+Condition pull_request field is null means you get false only for pull_request: null - however your first document is pull_request: {diff_url:null, patch_url:null, html_url:null} which is not "null" – 
+Wernfried Domscheit
+ Feb 11, 2020 at 14:03
+db.getCollection("Issues").find({"pull_request":null}), It worked. If three of inner features are null, pull_request is null. – 
+babeyh
+ Feb 11, 2020 at 14:07 
+Add a comment
+
+Report this ad
+4 Answers
+Sorted by:
+
+Highest score (default)
+
+4
+
+
+Because of some records has no pull_request field, I added a or condition;
+
+    db.getCollection("test").aggregate( [ 
+  { 
+      $addFields: { 
+          hasPullRequest: { 
+             $cond: [ 
+                 { 
+                     $or:
+                     [ 
+                         { $and: [ 
+                            { $eq: [ "$pull_request.diff_url", null ] },
+                            { $eq: [ "$pull_request.patch_url", null ] },
+                            { $eq: [ "$pull_request.html_url", null ] },
+                                 ]
+                         },
+                         {  $eq:[{ $ifNull: [ "$pull_request", 0 ] },0]  }
+                      ]
+                  },
+                 false, 
+                 true 
+             ] 
+          } 
+      } 
+  },
+  {
+        $out: "Issues2"
+  }
+]
+).pretty()
+It perfectly worked for me.
+
+Share
+Improve this answer
+Follow
+answered Feb 12, 2020 at 9:11
+babeyh's user avatar
+babeyh
+63022 gold badges77 silver badges1717 bronze badges
+Add a comment
+
+3
+
+
+you can try to use $ifNull like this:
+
+db.getCollection('nameColl').aggregate([
+   {
+    $addFields: 
+        {
+            newField: 
+                {
+                    $cond: {if:{$eq:[{ $ifNull: [ "$field", 0 ] },0] }   , 
+                    then: false, 
+                    else: true }
+                }
+        }       
+}        
+])
+Share
+Improve this answer
+Follow
+answered Feb 11, 2020 at 14:59
+JuniorBasilio's user avatar
+JuniorBasilio
+3122 bronze badges
+Add a comment
+
+3
+
+
+The problem is with your query condition - { "$eq": {"$pull_request": null}}. It should be either of the following:
+
+db.test.aggregate( [ 
+  { 
+      $addFields: { 
+          hasPullRequest: { 
+             $cond: [ 
+                 { $eq: [ "$pull_request", { diff_url: null, patch_url: null, html_url: null } ] }, 
+                 false, 
+                 true 
+             ] 
+          } 
+      } 
+  }
+] ).pretty()
+
+db.test.aggregate( [ 
+  { 
+      $addFields: { 
+          hasPullRequest: { 
+             $cond: [ 
+                 { $and: [ 
+                        { $eq: [ "$pull_request.diff_url", null ] },
+                        { $eq: [ "$pull_request.patch_url", null ] },
+                        { $eq: [ "$pull_request.html_url", null ] }
+                 ] },
+                 false, 
+                 true 
+             ] 
+          } 
+      } 
+  }
+] ).pretty()
