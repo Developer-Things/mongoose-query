@@ -273,3 +273,20 @@ db.test.aggregate( [
       } 
   }
 ] ).pretty()
+
+
+Next 
+db.items.aggregate([ { $project :
+{
+     name: 1,
+     customfield:
+     {
+         $cond: { if: { $eq: [ "$field1", "4" ] }, then: 30,
+                else: {
+                    if: 
+                    { $eq: ["$field1","8"]}, 
+                    then: 25, else: 10}}
+               }
+           }},{ $sort: { customfield: 1 }},{$limit:12}]);
+
+
