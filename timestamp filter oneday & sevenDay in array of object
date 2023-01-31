@@ -117,7 +117,7 @@ async function sevenDaysSwapHistory() {
   return new Promise(async (resolve, reject) => {
     try {
       var today = new Date()
-      var yesterday = new Date(today.valueOf() - (1000 * 60 * 60 * 24))
+      var yesterday = new Date(today.valueOf() - (1000 * 60 * 60 * 24 * 7))
       let timeToday = today.getTime()
       let timeyesterday = yesterday.getTime()
 
