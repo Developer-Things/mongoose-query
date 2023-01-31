@@ -1,0 +1,171 @@
+collection 
+=========
+/** 
+* Paste one or more documents here
+*/
+{
+  "fromTokenSymbol": "WTN",
+  "toTokenSymbol": "BNB",
+  "fromTokenAddress": "C02",
+  "toTokenAddress": "C01",
+  "pairAddress": "P01",
+  "__v": 0,
+  "swapHistoryDollar": [
+    {
+      "timestampDate": {
+        "$numberLong": "1675160936929"
+      },
+      "isoDate": {
+        "$date": {
+          "$numberLong": "1675180936929"
+        }
+      },
+      "amount": 12000
+    },
+    {
+      "timestampDate": {
+        "$numberLong": "1675181125913"
+      },
+      "isoDate": {
+        "$date": {
+          "$numberLong": "1675181125913"
+        }
+      },
+      "amount": 8000
+    },
+    {
+      "timestampDate": {
+        "$numberLong": "1675181125913"
+      },
+      "isoDate": {
+        "$date": {
+          "$numberLong": "1675181125913"
+        }
+      },
+      "amount": 8000
+    }
+  ]
+}
+
+
+
+
+query
+======
+
+async function dayWiseSwapHistory() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      var today = new Date()
+      var yesterday = new Date(today.valueOf() - (1000 * 60 * 60 * 24))
+      let timeToday = today.getTime()
+      let timeyesterday = yesterday.getTime()
+
+      console.log("changeTimeStamp ---->>>>>", timeToday, timeyesterday);
+
+      let getResult = await pairsList.aggregate([
+
+        { $unwind: "$swapHistoryDollar" },
+        {
+          $match: {
+            pairAddress: "P01",
+            "swapHistoryDollar.timestampDate": {
+              $gte: timeyesterday,
+              $lt: timeToday
+            }
+          }
+        },
+
+        {
+          $project: {
+            swapHistoryDollar: 1,
+            fromTokenAddress: 1,
+            toTokenAddress: 1,
+            pairAddress: 1,
+          }
+        },
+        {
+          "$group": {
+            "_id": "_id",
+            "swapHistoryDollar": {
+              "$sum": {
+                "$sum": "$swapHistoryDollar.amount"
+              }
+            },
+            "firstValue": {
+              "$first": "$swapHistoryDollar.amount"
+            },
+            "lastValue": {
+              "$last": "$swapHistoryDollar.amount"
+            }
+          }
+        },
+
+      ])
+      console.log("getResult: ", getResult);
+
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  });
+
+}
+dayWiseSwapHistory()
+
+
+async function sevenDaysSwapHistory() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      var today = new Date()
+      var yesterday = new Date(today.valueOf() - (1000 * 60 * 60 * 24))
+      let timeToday = today.getTime()
+      let timeyesterday = yesterday.getTime()
+
+      console.log("changeTimeStamp ---->>>>>", timeToday, timeyesterday);
+
+      let getResult = await pairsList.aggregate([
+
+        { $unwind: "$swapHistoryDollar" },
+        {
+          $match: {
+            pairAddress: "P01",
+            "swapHistoryDollar.timestampDate": {
+              $gte: timeyesterday,
+              $lt: timeToday
+            }
+          }
+        },
+
+        {
+          $project: {
+            swapHistoryDollar: 1,
+            fromTokenAddress: 1,
+            toTokenAddress: 1,
+            pairAddress: 1,
+          }
+        },
+        {
+          "$group": {
+            "_id": "_id",
+            "swapHistoryDollar": {
+              "$sum": {
+                "$sum": "$swapHistoryDollar.amount"
+              }
+            },
+            "firstValue": {
+              "$first": "$swapHistoryDollar.amount"
+            },
+            "lastValue": {
+              "$last": "$swapHistoryDollar.amount"
+            }
+          }
+        },
+
+      ])
+      console.log("getResult: ", getResult);
+
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  });
+}
