@@ -1,0 +1,5 @@
+
+
+If you're using VS code then go to one unused declaration then press Ctrl+.. Or hover over it and It will a show quick fix option. Click on it then select the Delete all unused declaration.
+
+Or if you're using vim/nvim with coc.vim use the <leader>qf shortcut to do a quick fix.
