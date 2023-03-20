@@ -9,3 +9,4 @@ One dark pro
 Auto rename rag
 Auto close tag
 Whirl css loading 
+window.open('chrome://devtools/content/network/network-panel.html');
